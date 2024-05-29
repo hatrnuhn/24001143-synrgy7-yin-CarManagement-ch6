@@ -7,6 +7,8 @@ class User extends Model {
     email!: string;
     username!: string;
     password!: string;
+    createdAt!: Date;
+    updatedAt!: Date;
     deletedAt!: Date;
     superAdmin!: SuperAdmin;
     admin!: Admin;

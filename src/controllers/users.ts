@@ -10,7 +10,15 @@ export const getAllUsers: RequestHandler = async (req, res) => {
     try {
         const users = await userService.getAllUsers();
 
-        res.status(StatusCodes.OK).json(users);
+        res.status(StatusCodes.OK).json(users.map((u, i) => {
+            return {
+                id: u.id,
+                email: u.email,
+                username: u.username,
+                createdAt: u.createdAt,
+                updatedAt: u.updatedAt
+            }
+        }));
     } catch (err) {
         errorHandler(err, res);
     }
