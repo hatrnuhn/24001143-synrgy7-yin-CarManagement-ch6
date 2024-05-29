@@ -28,13 +28,14 @@ class UserRepository {
 
     async createAdmin(userId: number) {
         return await Admin.query()
-            .insertAndFetch({ userId });
+            .insertAndFetch({ userId })
+            .withGraphFetched('user');
     }
 
-    async deleteAdmin(userId: number) {
+    async deleteAdmin(adminId: number) {
         return await Admin.query()
             .delete()
-            .where({ userId })
+            .findOne({ id: adminId })
             .returning('*');
     }
 }

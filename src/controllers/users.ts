@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { UserPatch } from '../models/dtos/users';
 import User from '../models/User';
 import { errorHandler } from '../repositories/errors';
+import { NotFoundError } from 'objection';
 
 export const getAllUsers: RequestHandler = async (req, res) => {
     try {
@@ -70,13 +71,30 @@ export const deleteUser: RequestHandler = async (req, res) => {
 }
 
 export const makeAdmin: RequestHandler = async (req, res) => {
-    const { userId } = req.params;
+    const { userId } = req.body;
 
     try {
         const newAdmin = await userService.makeAdmin(+userId);
 
+        res.status(StatusCodes.OK).json({
+            adminId: newAdmin.id,
+            email: newAdmin.user.email,
+            username: newAdmin.user.username,
+        });
+    } catch (err) {
+        errorHandler(err, res);
+    }
+}
 
-        res.sendStatus(StatusCodes.OK).json(newAdmin);
+export const demoteAdmin: RequestHandler = async (req, res) => {
+    const { adminId } = req.params;
+
+    try {
+        const removed = await userService.removeAdmin(+adminId);
+
+        if(!removed) throw new NotFoundError({ message: 'Admin with such ID does not exist' });
+
+        res.sendStatus(StatusCodes.NO_CONTENT);
     } catch (err) {
         errorHandler(err, res);
     }

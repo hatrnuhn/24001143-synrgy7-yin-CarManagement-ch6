@@ -28,7 +28,7 @@ class UserService {
     }
 
     async removeAdmin(userId: number) {
-        await UserRepo.deleteAdmin(userId);
+        return await UserRepo.deleteAdmin(userId);
     }
 }
 
