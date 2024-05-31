@@ -2,7 +2,6 @@ export interface UserLoginPayload {
     userId: number;
     email: string;
     username: string;
-    role: string;
 }
 
 export interface AdminLoginPayload extends UserLoginPayload{

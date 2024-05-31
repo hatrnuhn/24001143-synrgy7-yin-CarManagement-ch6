@@ -1,5 +1,4 @@
 import { RequestHandler } from "express";
-import { StatusCodes } from "http-status-codes";
 import jwt from 'jsonwebtoken';
 import { errorHandler } from "../../repositories/errors";
 import { AuthorizationError } from "../../models/Errors";
@@ -7,14 +6,19 @@ import { AuthorizationError } from "../../models/Errors";
 export const verifySuperAdminToken: RequestHandler = async (req, res, next) => {
     const secret = process.env.JWT_SECRET!;
 
+    if (res.locals.skipVerif || res.locals.skipSuperAdminVerif) return next();
+
     const { authorization } = req.headers;
-    
-    if (!authorization) throw new AuthorizationError('Invalid authentication');
-    
+        
     try {
+        if (!authorization) throw new AuthorizationError('Invalid authentication');
+
         const data = jwt.verify(authorization.split(' ')[1], secret) as jwt.JwtPayload;
 
-        if(data.role !== "super") throw new AuthorizationError('Not a super admin');
+        if(!data.superId) throw new AuthorizationError('Not a super admin');
+
+        res.locals.superId = data.superId;
+        res.locals.skipVerif = true;
 
         next();
     } catch (err) {
@@ -23,39 +27,83 @@ export const verifySuperAdminToken: RequestHandler = async (req, res, next) => {
 }
 
 export const verifyAdminToken: RequestHandler = (req, res, next) => {
-        const secret = process.env.JWT_SECRET!;
+    const secret = process.env.JWT_SECRET!;
+    
+    if (res.locals.skipVerif || res.locals.skipAdminVerif) return next();
 
-        const { authorization } = req.headers;
-
+    const { authorization } = req.headers;
+    
+    try {
         if (!authorization) throw new AuthorizationError('Invalid authentication');
-        
-        try {
-        
-            const data = jwt.verify(authorization.split(' ')[1], secret) as jwt.JwtPayload;
-    
-            if(String(data.role) !== "admin") throw new AuthorizationError('Not an admin');
-    
-            next();
-        } catch (err) {
-            errorHandler(err, res);
-        }
 
+        const data = jwt.verify(authorization.split(' ')[1], secret) as jwt.JwtPayload;
+
+        if(!data.adminId) throw new AuthorizationError('Not an admin');
+
+        res.locals.adminId = data.adminId;
+        res.locals.skipVerif = true;
+
+        next();
+    } catch (err) {
+        errorHandler(err, res);
+    }
 }
 
 export const verifyUserToken: RequestHandler = (req, res, next) => {
-        const secret = process.env.JWT_SECRET!;
+    const secret = process.env.JWT_SECRET!;
 
-        const { authorization } = req.headers;
+    if (res.locals.skipVerif || res.locals.skipUserVerif) return next();
+
+    const { authorization } = req.headers;
         
+    try {
         if (!authorization) throw new AuthorizationError('Invalid authentication');
-        
-        try {
-            const data = jwt.verify(authorization.split(' ')[1], secret) as jwt.JwtPayload;
 
-            if(String(data.role) !== "user") throw new AuthorizationError('Not a user');
-    
-            next();    
-        } catch (err) {
-            errorHandler(err, res);
+        const data = jwt.verify(authorization.split(' ')[1], secret) as jwt.JwtPayload;
+
+        if(!data.userId) throw new AuthorizationError('Not a user');
+
+        res.locals.userId = data.userId;
+        res.locals.skipVerif = true; 
+
+        next();    
+    } catch (err) {
+        errorHandler(err, res);
+    }
+}
+
+export const checkGetCarRole: RequestHandler = (req, res, next) => {
+    const { as } = req.query;
+
+    if (['super', 'admin'].includes(as as string) ) {
+        switch (as) {
+            case 'admin':
+                res.locals.skipSuperAdminVerif = true;
+                break;
+            case 'super':
+                res.locals.skipAdminVerif = true;
+                break;
         }
+        return next();
+    }
+
+    res.locals.skipVerif = true;
+    next();
+}
+
+export const checkGetUserByIdRole: RequestHandler = (req, res, next) => {
+    const { userId } = req.params;
+
+    switch (userId) {
+        case 'current':
+            res.locals.skipAdminVerif = true
+            break;
+    
+
+        default:
+            res.locals.skipUserVerif = true;
+            break;
+    }
+
+    next();
 }

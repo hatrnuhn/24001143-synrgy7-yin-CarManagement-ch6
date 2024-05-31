@@ -1,5 +1,4 @@
 import UserRepo from "../repositories/users";
-import { UserPatch } from "../models/dtos/users";
 import User from "../models/User";
 
 class UserService {
@@ -15,7 +14,7 @@ class UserService {
         return await UserRepo.create(user);
     }
 
-    async patchUser(id: number, update: UserPatch) {
+    async patchUser(id: number, update: Partial<User>) {
         return await UserRepo.patch(id, update);
     }
 
@@ -25,6 +24,12 @@ class UserService {
 
     async makeAdmin(userId: number) {
         return await UserRepo.createAdmin(userId);
+    }
+
+    async createAdmin(user: Partial<User>) {
+        const newUser = await UserRepo.create(user);
+
+        return await this.makeAdmin(newUser.id);
     }
 
     async removeAdmin(userId: number) {

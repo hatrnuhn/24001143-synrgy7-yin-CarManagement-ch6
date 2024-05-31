@@ -1,9 +1,8 @@
 import { Knex } from 'knex';
 import { Model } from 'objection';
-import User from '../User';
 import SuperAdmin from '../SuperAdmin';
 import Admin from '../Admin';
-import { Car } from '../Car';
+import Car from '../Car';
 
 export const seed = async (knex: Knex): Promise<void> => {
     await knex('cars').del();

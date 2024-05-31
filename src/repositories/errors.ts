@@ -10,7 +10,7 @@ import {
     CheckViolationError,
     DataError
 } from 'objection';
-import { AuthorizationError, JwtError } from '../models/Errors';
+import { AuthorizationError, BadRequestBodyError, JwtError } from '../models/Errors';
 import { 
     JsonWebTokenError, 
     NotBeforeError, 
@@ -72,6 +72,10 @@ export function errorHandler(err: any, res: Response) {
         res.status(400).send({
             message: err.message
         });
+    } else if (err instanceof ConstraintViolationError) {
+        res.status(400).send({
+            message: err.message
+        })
     } else if (err instanceof DataError) {
         res.status(400).send({
             message: err.message
@@ -86,6 +90,10 @@ export function errorHandler(err: any, res: Response) {
         })
     } else if (err instanceof AuthorizationError) {
         res.status(401).send({
+            message: err.message
+        })
+    } else if (err instanceof BadRequestBodyError) {
+        res.status(400).send({
             message: err.message
         })
     } else {

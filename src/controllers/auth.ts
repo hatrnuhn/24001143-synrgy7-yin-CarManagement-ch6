@@ -29,7 +29,6 @@ export const login: RequestHandler = async (req, res) => {
                     userId: user.id,
                     email: user.email,
                     username: user.username,
-                    role: 'super'
                 }
                 break;
         
@@ -43,7 +42,6 @@ export const login: RequestHandler = async (req, res) => {
                     userId: user.id,
                     email: user.email,
                     username: user.username,
-                    role: 'admin'
                 }    
                 break
 
@@ -54,7 +52,6 @@ export const login: RequestHandler = async (req, res) => {
                     userId: user.id,
                     email: user.email,
                     username: user.username,
-                    role:'user'
                 }        
                 break;
         }

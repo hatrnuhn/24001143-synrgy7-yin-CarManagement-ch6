@@ -1,8 +1,8 @@
 import { Model, snakeCaseMappers } from "objection";
 import Admin from "./Admin";
+import SuperAdmin from "./SuperAdmin";
 
-
-export class Car extends Model {
+class Car extends Model {
     id!: string;
     plate!: string;
     manufacture!: string;
@@ -35,54 +35,56 @@ export class Car extends Model {
 
     static get relationMappings() {
         return {
-            createdByAdmin: {
+            adminCreator: {
                 relation: Model.BelongsToOneRelation,
                 modelClass: Admin,
                 join: {
-                    from: 'cars.createdBy',
+                    from: 'cars.createdByAdmin',
                     to: 'admins.id'
                 }
             },
-            createdBySuper: {
+            superCreator: {
                 relation: Model.BelongsToOneRelation,
-                modelClass: Admin,
+                modelClass: SuperAdmin,
                 join: {
-                    from: 'cars.createdBy',
+                    from: 'cars.createdBySuper',
                     to: 'superAdmins.id'
                 }
             },
-            lastUpdatedByAdmin: {
+            lastAdminUpdator: {
                 relation: Model.BelongsToOneRelation,
                 modelClass: Admin,
                 join: {
-                    from: 'cars.lastUpdatedBy',
+                    from: 'cars.lastUpdatedByAdmin',
                     to: 'admins.id'
                 }
             },
-            lastUpdatedBySuper: {
+            lastSuperUpdator: {
                 relation: Model.BelongsToOneRelation,
-                modelClass: Admin,
+                modelClass: SuperAdmin,
                 join: {
-                    from: 'cars.lastUpdatedBy',
+                    from: 'cars.lastUpdatedBySuper',
                     to: 'superAdmins.id'
                 }
             },
-            deletedByAdmin: {
+            adminDeletor: {
                 relation: Model.BelongsToOneRelation,
                 modelClass: Admin,
                 join: {
-                    from: 'cars.deletedBy',
+                    from: 'cars.deletedByAdmin',
                     to: 'admins.id'
                 }
             },
-            deletedBySuper: {
+            superDeletor: {
                 relation: Model.BelongsToOneRelation,
-                modelClass: Admin,
+                modelClass: SuperAdmin,
                 join: {
-                    from: 'cars.deletedBy',
+                    from: 'cars.deletedBySuper',
                     to: 'superAdmins.id'
                 }
             }
         }
     }
 }
+
+export default Car;

@@ -24,12 +24,12 @@ export async function up(knex: Knex): Promise<void> {
             OR 
             (deleted_at IS NOT NULL AND (deleted_by_admin IS NOT NULL OR deleted_by_super IS NOT NULL) AND (deleted_by_admin IS NULL OR deleted_by_super IS NULL))
         `);
-        table.integer('created_by_admin').unsigned().references('id').inTable('admins').onDelete('CASCADE');
-        table.integer('created_by_super').unsigned().references('id').inTable('super_admins').onDelete('CASCADE');
+        table.integer('created_by_admin').unsigned().references('id').inTable('admins').onDelete('CASCADE').nullable();
+        table.integer('created_by_super').unsigned().references('id').inTable('super_admins').onDelete('CASCADE').nullable();
         table.check('created_by_admin IS NOT NULL OR created_by_super IS NOT NULL');
         table.check('created_by_admin IS NULL OR created_by_super IS NULL');
-        table.integer('last_updated_by_admin').references('id').inTable('admins').unsigned().onDelete('CASCADE');
-        table.integer('last_updated_by_super').references('id').inTable('super_admins').unsigned().onDelete('CASCADE');
+        table.integer('last_updated_by_admin').references('id').inTable('admins').unsigned().onDelete('CASCADE').nullable();
+        table.integer('last_updated_by_super').references('id').inTable('super_admins').unsigned().onDelete('CASCADE').nullable();
         table.check('last_updated_by_admin IS NOT NULL OR last_updated_by_super IS NOT NULL');
         table.check('last_updated_by_admin IS NULL OR last_updated_by_super IS NULL');
     });

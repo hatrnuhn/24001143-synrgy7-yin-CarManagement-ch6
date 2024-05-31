@@ -1,5 +1,4 @@
 import Admin from "../models/Admin";
-import { UserPatch } from "../models/dtos/users";
 import User from "../models/User";
 
 class UserRepository {
@@ -11,11 +10,11 @@ class UserRepository {
         return await User.query().where({ deletedAt: null });
     }
 
-    async create(user: User) {
+    async create(user: Partial<User>) {
         return await User.query().insertAndFetch(user);
     }
 
-    async patch(userId: number, update: UserPatch) {
+    async patch(userId: number, update: Partial<User>) {
         return await User.query()
             .patchAndFetchById(userId, update);
     }
@@ -27,6 +26,11 @@ class UserRepository {
     }
 
     async createAdmin(userId: number) {
+        const user = User.query()
+            .findById(userId);
+
+        if(!user) return undefined;
+        
         return await Admin.query()
             .insertAndFetch({ userId })
             .withGraphFetched('user');

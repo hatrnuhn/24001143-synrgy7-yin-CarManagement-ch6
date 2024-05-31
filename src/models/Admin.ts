@@ -1,5 +1,6 @@
 import { Model, snakeCaseMappers } from "objection";
 import User from "./User";
+import Car from "./Car";
 
 class Admin extends Model {
     id!: number;
@@ -22,6 +23,30 @@ class Admin extends Model {
                 join: {
                     from: 'admins.userId',
                     to: 'users.id'
+                }
+            },
+            createdCars: {
+                relation: Model.HasManyRelation,
+                modelClass: Car,
+                join: {
+                    from: 'admins.id',
+                    to: 'cars.createdByAdmin'
+                }
+            },
+            deletedCars: {
+                relation: Model.HasManyRelation,
+                modelClass: Car,
+                join: {
+                    from: 'admins.id',
+                    to: 'cars.deletedByAdmin'
+                }
+            },
+            updatedCars: {
+                relation: Model.HasManyRelation,
+                modelClass: Car,
+                join: {
+                    from: 'admins.id',
+                    to: 'cars.lastDeletedByAdmin'
                 }
             }
         }
