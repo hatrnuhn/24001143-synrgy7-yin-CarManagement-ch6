@@ -17,7 +17,6 @@ export const login: RequestHandler = async (req, res) => {
             .findOne({ username })
             .withGraphFetched('[admin, superAdmin]');
         
-
         let payload: LoginPayload = null;
         switch (as) {
             case 'super':                
