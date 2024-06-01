@@ -6,12 +6,15 @@ import { StatusCodes } from "http-status-codes";
 import { errorHandler } from "../repositories/errors";
 import jwt from "jsonwebtoken";
 import { LoginPayload } from "../models/dtos/responses";
+import { BadRequestBodyError } from "../models/Errors";
 
 export const login: RequestHandler = async (req, res) => {
     try {
         const secret = process.env.JWT_SECRET!;
         const { as } = req.query;
         const { username, password } = req.body;
+
+        if (!username || !password) throw new BadRequestBodyError('Bad request');
 
         const user = await User.query()
             .findOne({ username })

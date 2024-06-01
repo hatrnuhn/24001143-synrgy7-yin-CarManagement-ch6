@@ -29,6 +29,8 @@ class UserService {
     async createAdmin(user: Partial<User>) {
         const newUser = await UserRepo.create(user);
 
+        if (!newUser) return undefined;
+        
         return await this.makeAdmin(newUser.id);
     }
 

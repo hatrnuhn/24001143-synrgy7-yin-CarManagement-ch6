@@ -10,15 +10,7 @@ export const getAllUsers: RequestHandler = async (req, res) => {
     try {
         const users = await userService.getAllUsers();
 
-        res.status(StatusCodes.OK).json(users.map((u, i) => {
-            return {
-                id: u.id,
-                email: u.email,
-                username: u.username,
-                createdAt: u.createdAt,
-                updatedAt: u.updatedAt
-            }
-        }));
+        res.status(StatusCodes.OK).json(users);
     } catch (err) {
         errorHandler(err, res);
     }
@@ -32,11 +24,7 @@ export const getUserById: RequestHandler = async (req, res) => {
     try {
         const user = await userService.getUserById(+userId);
 
-        if(!user) {
-            return res.status(StatusCodes.NOT_FOUND).json({
-                error: 'User is not found'
-            })
-        }
+        if(!user) throw new NotFoundError({ message: 'User does not exist' });
 
         res.status(StatusCodes.OK).json(user);
     } catch (err) {
@@ -49,6 +37,8 @@ export const createUser: RequestHandler = async (req, res) => {
 
     try {
         const savedUser = await userService.createUser(body);
+
+        if (!savedUser) throw new NotFoundError({ message: 'User does not exist' });
 
         res.status(StatusCodes.CREATED).json(savedUser);
     } catch (err) {
@@ -63,6 +53,8 @@ export const patchUser: RequestHandler = async (req, res) => {
     try {
         const patchedUser = await userService.patchUser(+userId, body);
 
+        if (!patchedUser) throw new NotFoundError({ message: 'User does not exist' });
+
         res.status(StatusCodes.OK).json(patchedUser);
     } catch (err) {
         errorHandler(err, res);
@@ -73,7 +65,9 @@ export const deleteUser: RequestHandler = async (req, res) => {
     const { userId } = req.params;
 
     try {
-        await userService.deleteUser(+userId);
+        const deletedUser = await userService.deleteUser(+userId);
+
+        if (!deletedUser) throw new NotFoundError({ message: 'User does not exist' });
 
         res.sendStatus(StatusCodes.NO_CONTENT);
     } catch (err) {

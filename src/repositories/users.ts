@@ -1,28 +1,57 @@
 import Admin from "../models/Admin";
 import User from "../models/User";
+import { UserResponse } from "../models/dtos/responses/users";
+
+const toUserResponseOrUndefined = (u: User | undefined): UserResponse | undefined => {
+    if (!u) return undefined;
+    return {
+        id: u.id,
+        email: u.email,
+        username: u.username,
+        createdAt: u.createdAt,
+        updatedAt: u.updatedAt
+    }
+}
 
 class UserRepository {
     async find(userId: number) {
-        return await User.query().where({ id: userId, deletedAt: null }).first();
+        const user = await User.query().where({ id: userId, deletedAt: null }).first();
+
+        return toUserResponseOrUndefined(user);
     }
 
     async findAll() {
-        return await User.query().where({ deletedAt: null });
+        const users = await User.query().where({ deletedAt: null });
+
+        return users.map((u, i) => {
+            return toUserResponseOrUndefined(u) as UserResponse;
+        })
     }
 
     async create(user: Partial<User>) {
-        return await User.query().insertAndFetch(user);
+        const savedUser = await User.query().insertAndFetch(user);
+
+        return toUserResponseOrUndefined(savedUser);
     }
 
     async patch(userId: number, update: Partial<User>) {
-        return await User.query()
-            .patchAndFetchById(userId, update);
+        const patchedUser = await User.query()
+            .patch(update)
+            .where({ id: userId, deletedAt: null })
+            .returning('*')
+            .first();
+
+        return toUserResponseOrUndefined(patchedUser);
     }
 
     async delete(userId: number) {
-        return await User.query()
-            .findById(userId)
-            .patch({ deletedAt: new Date() });
+        const deletedUser = await User.query()
+            .patch({ deletedAt: new Date() })
+            .where({ id: userId, deletedAt: null })
+            .returning('*')
+            .first();
+
+        return toUserResponseOrUndefined(deletedUser);
     }
 
     async createAdmin(userId: number) {

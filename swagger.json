@@ -1,0 +1,370 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Car Management API",
+        "version": "0.1.0",
+        "description": "Allows rentable cars managing through admin",
+        "summary": "Car manager for Chapter 6 challenge"
+    },
+    "server": {
+        "url": "http://localhost:3000",
+        "description": "Development server"
+    },
+    "components": {
+        "schemas": {
+            "GeneralError": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "GetCarAsAdminResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "plate": {
+                        "type": "string"
+                    },
+                    "manufacture": {
+                        "type": "string"
+                    },
+                    "model": {
+                        "type": "string"
+                    },
+                    "rate": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "transmission": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "year": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "specs": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "availableDate": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "createdByAdmin": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "createdBySuper": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "updatedAt": {
+                        "type": "string"
+                    },
+                    "lastUpdatedByAdmin": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "lastUpdatedBySuper": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "deletedAt": {
+                        "type": "string"
+                    },
+                    "deletedByAdmin": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "deletedBySUper": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "GetCarAsUserResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "plate": {
+                        "type": "string"
+                    },
+                    "manufacture": {
+                        "type": "string"
+                    },
+                    "model": {
+                        "type": "string"
+                    },
+                    "rate": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "transmission": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "year": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "specs": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "availableDate": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "string"
+                    }
+                }
+            },
+            "GetUserResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "string"
+                    }
+                }
+            },
+            "GetAdminResponse": {
+                "type": "object",
+                "properties": {
+                    "adminId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type":"string"
+                    }
+                }
+            },
+            "GetSuperAdminResponse": {
+                "type": "object",
+                "properties": {
+                    "superId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type":"string"
+                    }
+                }
+            }, 
+            "LoginAsAdminResponse": {
+                "type": "object",
+                "properties": {
+                    "adminId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "token": {
+                        "type": "string"
+                    }
+                }
+            },
+            "LoginAsSuperResponse": {
+                "type": "object",
+                "properties": {
+                    "superId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "token": {
+                        "type": "string"
+                    }
+                }
+            },
+            "LoginAsUserResponse": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "token": {
+                        "type": "string"
+                    }
+                }
+            }, 
+            "LoginRequestBody": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "examples": {
+            "LoginAsUserResponseExample": {
+                "description": "Successfull user login example",
+                "value": {
+                    "userId": 1,
+                    "email": "user1@ch6.com",
+                    "username": "user1",
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidXNlcjFAY2g2LmNvbSIsInVzZXJuYW1lIjoidXNlcjEiLCJpYXQiOjE3MTcyNTIzMzQsImV4cCI6MTcxOTg0NDMzNH0.WNtQEfzLjJBXs-0f5C-MKnUpxxHyfPScvf-yRjq_adM"
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/auth/login": {
+            "post": {
+                "summary": "Authenticates a credential to the system",
+                "description": "Authenticates a username and a password then returns a token for future authentication.",
+                "parameters": [
+                    {
+                        "name": "as",
+                        "in": "query",
+                        "description": "Gives an option to log-in as super or admin.\n\nPossible values:\n```admin```\n```super```"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Account credentials",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequestBody"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfull login response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "description": "User login response",
+                                            "$ref": "#/components/schemas/LoginAsUserResponse"
+                                        },                                        {
+                                            "description": "Admin login response",
+                                            "$ref": "#/components/schemas/LoginAsAdminResponse"
+                                        },
+                                        {
+                                            "description": "Super login response",
+                                            "$ref": "#/components/schemas/LoginAsSuperResponse"
+                                        }
+                                    ]
+                                },
+                                "examples": {
+                                    "LoginAsUserResponseExample": {
+                                        "$ref":"#/components/examples/LoginAsUserResponseExample"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

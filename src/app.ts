@@ -7,6 +7,8 @@ import { knexSnakeCaseMappers, Model } from 'objection';
 import config from './knexfile';
 import knex from 'knex';
 import { checkMandatoryEnvVars } from './repositories/utils';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../swagger.json';
 
 checkMandatoryEnvVars
     .catch((err) => console.log(err));
@@ -23,6 +25,8 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/api', printRequest, apiRouter);
 
