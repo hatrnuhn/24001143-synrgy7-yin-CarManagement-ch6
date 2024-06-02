@@ -10,7 +10,7 @@ import {
     CheckViolationError,
     DataError
 } from 'objection';
-import { AuthorizationError, BadRequestBodyError, JwtError } from '../models/Errors';
+import { AuthenticationError, AuthorizationError, BadRequestBodyError, JwtError } from '../models/Errors';
 import { 
     JsonWebTokenError, 
     NotBeforeError, 
@@ -90,6 +90,10 @@ export function errorHandler(err: any, res: Response) {
         })
     } else if (err instanceof AuthorizationError) {
         res.status(401).send({
+            message: err.message
+        })
+    } else if (err instanceof AuthenticationError) {
+        res.status(403).send({
             message: err.message
         })
     } else if (err instanceof BadRequestBodyError) {

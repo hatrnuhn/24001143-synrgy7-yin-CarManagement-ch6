@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import User from '../models/User';
 import { errorHandler } from '../repositories/errors';
 import { NotFoundError } from 'objection';
-import { BadRequestBodyError } from '../models/Errors';
+import { AuthorizationError, BadRequestBodyError } from '../models/Errors';
 
 export const getAllUsers: RequestHandler = async (req, res) => {
     try {
@@ -50,6 +50,8 @@ export const patchUser: RequestHandler = async (req, res) => {
     const { userId } = req.params;
     const body = req.body as Partial<User>;
 
+    if (userId !== res.locals.userId) throw new AuthorizationError('Unauthorized');
+
     try {
         const patchedUser = await userService.patchUser(+userId, body);
 
@@ -63,6 +65,8 @@ export const patchUser: RequestHandler = async (req, res) => {
 
 export const deleteUser: RequestHandler = async (req, res) => {
     const { userId } = req.params;
+
+    if (res.locals.userId && userId !== res.locals.userId) throw new AuthorizationError('Unauthorized');
 
     try {
         const deletedUser = await userService.deleteUser(+userId);

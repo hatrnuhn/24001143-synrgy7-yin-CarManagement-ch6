@@ -1,12 +1,12 @@
 import { RequestHandler } from "express";
 import bcrypt from 'bcrypt';
 import User from "../models/User";
-import { NotFoundError, ValidationError } from "objection";
+import { NotFoundError } from "objection";
 import { StatusCodes } from "http-status-codes";
 import { errorHandler } from "../repositories/errors";
 import jwt from "jsonwebtoken";
 import { LoginPayload } from "../models/dtos/responses";
-import { BadRequestBodyError } from "../models/Errors";
+import { AuthenticationError, BadRequestBodyError } from "../models/Errors";
 
 export const login: RequestHandler = async (req, res) => {
     try {
@@ -61,7 +61,7 @@ export const login: RequestHandler = async (req, res) => {
 
         const result = await bcrypt.compare(password, user.password);
 
-        if(!result) throw new ValidationError({ type: '', message: 'Invalid username-password combination'});
+        if(!result) throw new AuthenticationError('Invalid username-password combination');
 
         const token = jwt.sign(payload, secret, { expiresIn: '30d' } );
 

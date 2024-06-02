@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import jwt from 'jsonwebtoken';
 import { errorHandler } from "../../repositories/errors";
-import { AuthorizationError } from "../../models/Errors";
+import { AuthenticationError, AuthorizationError } from "../../models/Errors";
 
 export const verifySuperAdminToken: RequestHandler = async (req, res, next) => {
     const secret = process.env.JWT_SECRET!;
@@ -34,7 +34,7 @@ export const verifyAdminToken: RequestHandler = (req, res, next) => {
     const { authorization } = req.headers;
     
     try {
-        if (!authorization) throw new AuthorizationError('Invalid authentication');
+        if (!authorization) throw new AuthenticationError('Invalid authentication');
 
         const data = jwt.verify(authorization.split(' ')[1], secret) as jwt.JwtPayload;
 
@@ -57,7 +57,7 @@ export const verifyUserToken: RequestHandler = (req, res, next) => {
     const { authorization } = req.headers;
         
     try {
-        if (!authorization) throw new AuthorizationError('Invalid authentication');
+        if (!authorization) throw new AuthenticationError('Invalid authentication');
 
         const data = jwt.verify(authorization.split(' ')[1], secret) as jwt.JwtPayload;
 
