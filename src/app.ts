@@ -9,6 +9,7 @@ import knex from 'knex';
 import { checkMandatoryEnvVars } from './repositories/utils';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger.json';
+import cors from 'cors';
 
 checkMandatoryEnvVars
     .catch((err) => console.log(err));
@@ -22,6 +23,7 @@ Model.knex(knex({...config[environment as keyof typeof config], connection, ...k
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
